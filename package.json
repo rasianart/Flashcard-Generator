@@ -1,0 +1,28 @@
+{
+  "name": "flashcard_gen",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "request": "^2.79.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.20.0",
+    "babel-preset-es2015": "^6.18.0"
+  },
+  "scripts": {
+    "babel": "babel --presets es2015 public/scripts/main.js -o public/build/main.bundle.js",
+    "start": "http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rasianart/Flashcard-Generator.git"
+  },
+  "author": "Patrick Segura",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rasianart/Flashcard-Generator/issues"
+  },
+  "homepage": "https://github.com/rasianart/Flashcard-Generator#readme"
+}

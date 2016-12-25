@@ -1,0 +1,1 @@
+{"text":"was the first preseident of the United States.","cloze":"George Washington"}
