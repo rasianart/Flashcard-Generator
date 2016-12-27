@@ -8,7 +8,6 @@ const basic = new BasicFlashcard();
 const cloze = new ClozeFlashcard();
 
 let cardMethod = '';
-let importData = [];
 
 const run = () => {
 	requestQuestion();
@@ -92,6 +91,7 @@ const chooseType = () => {
         message: "Would you like a basic question or a cloze-deleted question?",
         choices: ['Basic', 'Cloze-deleted']	
     }).then((user) => {
+    	let importData = [];
         if (user.cardtype === 'Basic') {
         	const importBasicArr = () => {
         		basic.front = importData[0];
