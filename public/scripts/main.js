@@ -25,7 +25,7 @@ const run = () => {
         	chooseType();
         } else {
         	cardMethod = 'Random';
-            readQuestion('basic');
+            readQuestion('random');
         }
     });
 }
@@ -109,14 +109,14 @@ const chooseType = () => {
 
 const readQuestion = (type) => {
 	const eitherFront = () => {
-		if(type === 'basic') {
+		if(type === 'basic' || type === 'random') {
 			return chalk.cyan(basic.front); 
 		} else {
 			return chalk.cyan(cloze.text);
 		}
 	}
 	const eitherBack = () => {
-		if(type === 'basic') {
+		if(type === 'basic' || type === 'random') {
 			return chalk.cyan(basic.back); 
 		} else {
 			return chalk.cyan(cloze.text.replace('...', '"' + cloze.cloze + '"'));
