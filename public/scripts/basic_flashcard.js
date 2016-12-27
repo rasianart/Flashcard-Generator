@@ -14,7 +14,7 @@ module.exports = class BasicFlashcard {
 		this.back,
 		this.save = (callback) => {
 			//saves to mysql database
-			connection.query('INSERT INTO basic SET ?', {front: this.front, back : this.back}, function(err, rows, fields) {
+			connection.query('INSERT INTO basic SET ?', {front: this.front, back : this.back}, (err, rows, fields) => {
 			  if (err) throw err;
 			  console.log('Succesfully Inserted Into Database');
 			  callback && callback();
@@ -26,7 +26,7 @@ module.exports = class BasicFlashcard {
 		},
 		this.fetchQuestion = (callback) => {
 			//fetches random question
-			connection.query('SELECT * FROM basic ORDER BY RAND() LIMIT 1', function(err, rows, fields) {
+			connection.query('SELECT * FROM basic ORDER BY RAND() LIMIT 1', (err, rows, fields) => {
 			  if (err) throw err;
 			  let dataArr = [];
 			  dataArr.push(rows[0].front);

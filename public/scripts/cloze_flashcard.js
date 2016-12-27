@@ -20,7 +20,7 @@ module.exports = class ClozeFlashcard {
 		}
 		this.save = (callback) => {
 			//saves to mysql database
-			connection.query('INSERT INTO cloze SET ?', {text: this.text, cloze : this.cloze}, function(err, rows, fields) {
+			connection.query('INSERT INTO cloze SET ?', {text: this.text, cloze : this.cloze}, (err, rows, fields) => {
 			  if (err) throw err;
 			  console.log('Succesfully Inserted Into Database');
 			  callback && callback();
@@ -32,7 +32,7 @@ module.exports = class ClozeFlashcard {
 		},
 		this.fetchQuestion = (callback) => {
 			//fetches random question
-			connection.query('SELECT * FROM cloze ORDER BY RAND() LIMIT 1', function(err, rows, fields) {
+			connection.query('SELECT * FROM cloze ORDER BY RAND() LIMIT 1', (err, rows, fields) => {
 			  if (err) throw err;
 			  let dataArr = [];
 			  dataArr.push(rows[0].text);

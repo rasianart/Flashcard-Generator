@@ -1,23 +1,23 @@
-let request = require('request');
-let inquirer = require('inquirer');
-let ClozeFlashcard = require('./cloze_flashcard.js');
-let BasicFlashcard = require('./basic_flashcard.js');
-let chalk = require('chalk');
+const request = require('request');
+const inquirer = require('inquirer');
+const ClozeFlashcard = require('./cloze_flashcard.js');
+const BasicFlashcard = require('./basic_flashcard.js');
+const chalk = require('chalk');
 
-let basic = new BasicFlashcard();
-let cloze = new ClozeFlashcard();
+const basic = new BasicFlashcard();
+const cloze = new ClozeFlashcard();
 
 let cardMethod = '';
 let importData = [];
 
-let run = () => {
+const run = () => {
 	requestQuestion();
     inquirer.prompt({
         type: "list",
         name: "method",
         message: "Would you like to create a flashcard, read a flashcard from the database, or read a random flashcard from the internet?",
         choices: ['Create', 'Read', 'Random']
-    }).then(function(ans) {
+    }).then((ans) => {
         if (ans.method === 'Create') {
         	cardMethod = 'Create';
         	createCard();
@@ -31,9 +31,9 @@ let run = () => {
     });
 }
 
-let requestQuestion = () => {
+const requestQuestion = () => {
     request('http://jservice.io/api/random', (error, response, body) => {
-        let data = JSON.parse(body);
+        const data = JSON.parse(body);
         basic.front = data[0].question;
         basic.back = data[0].answer;
         cloze.text = data[0].question;
@@ -41,13 +41,13 @@ let requestQuestion = () => {
     })
 }
 
-let createCard = () => {
+const createCard = () => {
     inquirer.prompt({
         type: "list",
         name: "createType",
         message: "Would you like to create a basic flashcard or a cloze-deleted flashcard?",
         choices: ['Basic', 'Cloze-deleted']	
-    }).then(function(creation) {
+    }).then((creation) => {
         if (creation.createType === 'Basic') {
         	inputFlashcard('basic');
         } else {
@@ -56,7 +56,7 @@ let createCard = () => {
     });
 }
 
-let inputFlashcard = (type) => {
+const inputFlashcard = (type) => {
 	let message;
 	if (type === 'basic') {
 		message = 'Please type the question portion of your flashcard.';
@@ -67,14 +67,14 @@ let inputFlashcard = (type) => {
 		type: 'input',
         name: 'input',
         message: message
-    }).then(function(question) {
+    }).then((question) => {
     	if (type === "basic") {
     		basic.front = question.input;
 	    	inquirer.prompt({
 				type: 'input',
 		        name: 'inputAnswer',
 		        message: 'Please type the answer portion of your flashcard.'
-		    }).then(function(answer) {
+		    }).then((answer) => {
 	    		basic.back = answer.inputAnswer;
 	    		save('Basic');
 		    });
@@ -85,30 +85,30 @@ let inputFlashcard = (type) => {
 	})
 }
 
-let chooseType = () => {
+const chooseType = () => {
     inquirer.prompt({
         type: "list",
         name: "cardtype",
         message: "Would you like a basic question or a cloze-deleted question?",
         choices: ['Basic', 'Cloze-deleted']	
-    }).then(function(user) {
+    }).then((user) => {
         if (user.cardtype === 'Basic') {
-        	let importBasicArr = () => {
+        	const importBasicArr = () => {
         		basic.front = importData[0];
         		basic.back = importData[1];
         		readQuestion('basic');
         	}
-            basic.fetchQuestion(function(exportData) {
+            basic.fetchQuestion((exportData) => {
             	importData = exportData;
             	importBasicArr();
             });
         } else {
-        	let importClozeArr = () => {
+        	const importClozeArr = () => {
         		cloze.text = importData[0];
         		cloze.cloze = importData[1];
         		readQuestion('cloze');
         	}
-        	cloze.fetchQuestion(function(exportData) {
+        	cloze.fetchQuestion((exportData) => {
         		importData = exportData;
         		importClozeArr();
         	});
@@ -116,15 +116,15 @@ let chooseType = () => {
     });
 }
 
-let readQuestion = (type) => {
-	let eitherFront = () => {
+const readQuestion = (type) => {
+	const eitherFront = () => {
 		if(type === 'basic') {
 			return chalk.cyan(basic.front); 
 		} else {
 			return chalk.cyan(cloze.text);
 		}
 	}
-	let eitherBack = () => {
+	const eitherBack = () => {
 		if(type === 'basic') {
 			return chalk.cyan(basic.back); 
 		} else {
@@ -135,7 +135,7 @@ let readQuestion = (type) => {
         type: 'input',
         name: 'answer',
         message: 'You chose ' + type + '.  Please enter an answer to the question.  If you do not know, press enter. ' + eitherFront()
-    }).then(function(choice) {
+    }).then((choice) => {
         if (choice.answer.toLowerCase() === basic.back.toLowerCase() || choice.answer.toLowerCase() === cloze.cloze.toLowerCase()) {
             console.log("You answered correctly!");
             if (cardMethod === 'Random') {
@@ -154,7 +154,7 @@ let readQuestion = (type) => {
     });
 }
 
-let save = (type) => {
+const save = (type) => {
     inquirer.prompt({
         type: 'confirm',
         name: 'save',
@@ -173,12 +173,12 @@ let save = (type) => {
     });
 }
 
-let playAgain = () => {
+const playAgain = () => {
     inquirer.prompt({
         type: 'confirm',
         name: 'again',
         message: 'Do you want more?'
-    }).then(function(input) {
+    }).then((input) => {
     	if(input.again){
     		run();
     	} else{
