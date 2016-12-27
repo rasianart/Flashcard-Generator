@@ -79,10 +79,7 @@ let inputFlashcard = (type) => {
 	    		save('Basic');
 		    });
     	} else {
-    		let regExp = /\(([^)]+)\)/;
-    		cloze.cloze = regExp.exec(question.input);
-    		cloze.text = question.input.replace(cloze.cloze[0], '...');
-    		cloze.cloze = cloze.cloze[0];
+    		cloze.clozeDeleted(question.input);
     		save('Cloze');
     	}
 	})

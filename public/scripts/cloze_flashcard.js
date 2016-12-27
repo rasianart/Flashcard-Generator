@@ -12,11 +12,11 @@ module.exports = class ClozeFlashcard {
 	constructor() {
 		this.text,
 		this.cloze,
-		this.returnDeleted = () => {
-			console.log(this.text);
-		},
-		this.answer = () => {
-			console.log(this.text.replace('...', '') + this.cloze);
+		this.clozeDeleted = (questionInput) => {
+			let regExp = /\(([^)]+)\)/;
+    		this.cloze = regExp.exec(questionInput);
+    		this.cloze = this.cloze[0];
+    		this.text = questionInput.replace(this.cloze, '...');
 		}
 		this.save = (callback) => {
 			//saves to mysql database
