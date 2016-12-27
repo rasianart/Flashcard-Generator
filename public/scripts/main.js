@@ -35,8 +35,6 @@ const requestQuestion = () => {
         const data = JSON.parse(body);
         basic.front = data[0].question;
         basic.back = data[0].answer;
-        cloze.text = data[0].question;
-        cloze.cloze = data[0].answer;
     })
 }
 
@@ -47,21 +45,14 @@ const createCard = () => {
         message: "Would you like to create a basic flashcard or a cloze-deleted flashcard?",
         choices: ['Basic', 'Cloze-deleted']	
     }).then((creation) => {
-        if (creation.createType === 'Basic') {
-        	inputFlashcard('basic');
-        } else {
-            inputFlashcard('cloze')
-        }
+        creation.createType === 'Basic' ? inputFlashcard('basic') : inputFlashcard('cloze');
     });
 }
 
 const inputFlashcard = (type) => {
 	let message;
-	if (type === 'basic') {
-		message = 'Please type the question portion of your flashcard.';
-	} else {
-		message = 'Please enter your cloze flashcard. Be sure the the cloze portion of your question is encapsulated by (   )';
-	}
+	type === 'basic' ? message = 'Please type the question portion of your flashcard.' : 
+					   message = 'Please enter your cloze flashcard. Be sure the the cloze portion of your question is encapsulated by (   )';
 	inquirer.prompt({
 		type: 'input',
         name: 'input',
@@ -136,20 +127,13 @@ const readQuestion = (type) => {
         name: 'answer',
         message: 'You chose ' + type + '.  Please enter an answer to the question.  If you do not know, press enter. ' + eitherFront()
     }).then((choice) => {
-        if (choice.answer.toLowerCase() === basic.back.toLowerCase() || choice.answer.toLowerCase() === cloze.cloze.toLowerCase()) {
+    	cloze.cloze && (cloze.cloze = cloze.cloze.toLowerCase());
+        if (choice.answer.toLowerCase() === basic.back.toLowerCase() || choice.answer.toLowerCase() === cloze.cloze) {
             console.log("You answered correctly!");
-            if (cardMethod === 'Random') {
-            	save('Basic');
-            } else {
-            	playAgain();
-            } 
+            cardMethod === 'Random' ? save('Basic') : playAgain(); 
         } else {
             console.log("You answered incorrectly. The correct answer is " + eitherBack());
-            if (cardMethod === 'Random') {
-            	save('Basic');
-            } else {
-            	playAgain();
-            }          
+            cardMethod === 'Random' ? save('Basic') : playAgain();         
         }
     });
 }
@@ -159,13 +143,9 @@ const save = (type) => {
         type: 'confirm',
         name: 'save',
         message: 'Would you like to save this flashcard to the database and to a local storage?'
-    }).then(function(save) {
+    }).then((save) => {
         if (save.save) {
-        	if(type === 'Basic'){
-        		basic.save(playAgain);
-        	} else {
-        		cloze.save(playAgain);
-        	}   
+        	type === 'Basic' ? basic.save(playAgain) : cloze.save(playAgain); 
         } else {
             console.log("That's OK.");
             playAgain();
