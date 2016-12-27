@@ -119,7 +119,7 @@ const readQuestion = (type) => {
 		if(type === 'basic') {
 			return chalk.cyan(basic.back); 
 		} else {
-			return chalk.cyan(cloze.text.replace('...', cloze.cloze));
+			return chalk.cyan(cloze.text.replace('...', '"' + cloze.cloze + '"'));
 		}
 	}
     inquirer.prompt({
@@ -127,7 +127,7 @@ const readQuestion = (type) => {
         name: 'answer',
         message: 'You chose ' + type + '.  Please enter an answer to the question.  If you do not know, press enter. ' + eitherFront()
     }).then((choice) => {
-    	cloze.cloze && (cloze.cloze = cloze.cloze.toLowerCase());
+    	cloze.cloze && (cloze.cloze = cloze.cloze.toLowerCase().replace(/\(|\)/g, ''));
         if (choice.answer.toLowerCase() === basic.back.toLowerCase() || choice.answer.toLowerCase() === cloze.cloze) {
             console.log("You answered correctly!");
             cardMethod === 'Random' ? save('Basic') : playAgain(); 
