@@ -26,7 +26,7 @@ let run = () => {
         	chooseType();
         } else {
         	cardMethod = 'Random';
-            readQuestion('random');
+            readQuestion('basic');
         }
     });
 }
@@ -137,7 +137,7 @@ let readQuestion = (type) => {
     inquirer.prompt({
         type: 'input',
         name: 'answer',
-        message: 'You chose ' + type + '.  Please enter an answer to the question.  If you do not know, say "IDK". ' + eitherFront()
+        message: 'You chose ' + type + '.  Please enter an answer to the question.  If you do not know, press enter. ' + eitherFront()
     }).then(function(choice) {
         if (choice.answer.toLowerCase() === basic.back.toLowerCase() || choice.answer.toLowerCase() === cloze.cloze.toLowerCase()) {
             console.log("You answered correctly!");
