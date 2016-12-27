@@ -8,13 +8,14 @@ let basic = new BasicFlashcard();
 let cloze = new ClozeFlashcard();
 
 let cardMethod = '';
+let importData = [];
 
 let run = () => {
 	requestQuestion();
     inquirer.prompt({
         type: "list",
         name: "method",
-        message: "Would you like to create a flashcard or read a flashcard from database, or read a random flashcard from the internet?",
+        message: "Would you like to create a flashcard, read a flashcard from the database, or read a random flashcard from the internet?",
         choices: ['Create', 'Read', 'Random']
     }).then(function(ans) {
         if (ans.method === 'Create') {
@@ -56,29 +57,34 @@ let createCard = () => {
 }
 
 let inputFlashcard = (type) => {
+	let message;
+	if (type === 'basic') {
+		message = 'Please type the question portion of your flashcard.';
+	} else {
+		message = 'Please enter your cloze flashcard. Be sure the the cloze portion of your question is encapsulated by (   )';
+	}
 	inquirer.prompt({
 		type: 'input',
         name: 'input',
-        message: 'Please type the question portion of your flashcard.'
+        message: message
     }).then(function(question) {
     	if (type === "basic") {
     		basic.front = question.input;
-    	} else {
-    		cloze.text = question.input;
-    	}
-    	inquirer.prompt({
-			type: 'input',
-	        name: 'inputAnswer',
-	        message: 'Please type the answer portion of your flashcard.'
-	    }).then(function(answer) {
-	    	if (type === "basic") {
+	    	inquirer.prompt({
+				type: 'input',
+		        name: 'inputAnswer',
+		        message: 'Please type the answer portion of your flashcard.'
+		    }).then(function(answer) {
 	    		basic.back = answer.inputAnswer;
 	    		save('Basic');
-	    	} else {
-	    		cloze.cloze = answer.inputAnswer;
-	    		save('Cloze');
-	    	}
-	    });
+		    });
+    	} else {
+    		let regExp = /\(([^)]+)\)/;
+    		cloze.cloze = regExp.exec(question.input);
+    		cloze.text = question.input.replace(cloze.cloze[0], '...');
+    		cloze.cloze = cloze.cloze[0];
+    		save('Cloze');
+    	}
 	})
 }
 
@@ -90,31 +96,48 @@ let chooseType = () => {
         choices: ['Basic', 'Cloze-deleted']	
     }).then(function(user) {
         if (user.cardtype === 'Basic') {
-            basic.fetchQuestion();
-            readQuestion('basic');
+        	let importBasicArr = () => {
+        		basic.front = importData[0];
+        		basic.back = importData[1];
+        		readQuestion('basic');
+        	}
+            basic.fetchQuestion(function(exportData) {
+            	importData = exportData;
+            	importBasicArr();
+            });
         } else {
-        	cloze.fetchQuestion();
-            readQuestion('cloze');
+        	let importClozeArr = () => {
+        		cloze.text = importData[0];
+        		cloze.cloze = importData[1];
+        		readQuestion('cloze');
+        	}
+        	cloze.fetchQuestion(function(exportData) {
+        		importData = exportData;
+        		importClozeArr();
+        	});
         }
     });
 }
 
 let readQuestion = (type) => {
-	// console.log(cloze.text);
-	// console.log(basic.front);
-	// let cardFront;
-	// let cardBack;
-	// if(type === 'cloze'){
-	// 	cardFront = cloze.text;
-	// 	cardBack = cloze.cloze;
-	// } else {
-	// 	cardFront = basic.front;
-	// 	cardBack = basic.back;
-	// }
+	let eitherFront = () => {
+		if(type === 'basic') {
+			return chalk.cyan(basic.front); 
+		} else {
+			return chalk.cyan(cloze.text);
+		}
+	}
+	let eitherBack = () => {
+		if(type === 'basic') {
+			return chalk.cyan(basic.back); 
+		} else {
+			return chalk.cyan(cloze.text.replace('...', cloze.cloze));
+		}
+	}
     inquirer.prompt({
         type: 'input',
         name: 'answer',
-        message: 'You chose ' + type + '.  Please enter an answer to the question.  If you do not know, say "IDK". ' + chalk.cyan(basic.front)
+        message: 'You chose ' + type + '.  Please enter an answer to the question.  If you do not know, say "IDK". ' + eitherFront()
     }).then(function(choice) {
         if (choice.answer.toLowerCase() === basic.back.toLowerCase() || choice.answer.toLowerCase() === cloze.cloze.toLowerCase()) {
             console.log("You answered correctly!");
@@ -124,7 +147,7 @@ let readQuestion = (type) => {
             	playAgain();
             } 
         } else {
-            console.log("You answered incorrectly. The correct answer is " + basic.back);
+            console.log("You answered incorrectly. The correct answer is " + eitherBack());
             if (cardMethod === 'Random') {
             	save('Basic');
             } else {
@@ -138,15 +161,13 @@ let save = (type) => {
     inquirer.prompt({
         type: 'confirm',
         name: 'save',
-        message: 'Would you like to save this flashcard?'
+        message: 'Would you like to save this flashcard to the database and to a local storage?'
     }).then(function(save) {
         if (save.save) {
         	if(type === 'Basic'){
-        		basic.save();
-        		wait = setTimeout(playAgain, 100);
+        		basic.save(playAgain);
         	} else {
-        		cloze.save();
-        		wait = setTimeout(playAgain, 100);
+        		cloze.save(playAgain);
         	}   
         } else {
             console.log("That's OK.");
@@ -164,9 +185,13 @@ let playAgain = () => {
     	if(input.again){
     		run();
     	} else{
+    		console.log('OK, goodbye.');
     		process.exit();
     	}
     });
 }
 
 run();
+
+
+

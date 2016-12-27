@@ -18,24 +18,26 @@ module.exports = class ClozeFlashcard {
 		this.answer = () => {
 			console.log(this.text.replace('...', '') + this.cloze);
 		}
-		this.save = () => {
+		this.save = (callback) => {
 			//saves to mysql database
 			connection.query('INSERT INTO cloze SET ?', {text: this.text, cloze : this.cloze}, function(err, rows, fields) {
 			  if (err) throw err;
 			  console.log('Succesfully Inserted Into Database');
+			  callback && callback();
 			});
 			// saves locally to text file
 			fs.appendFile('cloze_flashcards.txt', JSON.stringify(this), (error, data) => {
 				console.log("Succesfully added to local txt file!");
 			});
 		},
-		this.fetchQuestion = () => {
+		this.fetchQuestion = (callback) => {
 			//fetches random question
 			connection.query('SELECT * FROM cloze ORDER BY RAND() LIMIT 1', function(err, rows, fields) {
 			  if (err) throw err;
-			  this.text = rows[0].text;
-			  this.cloze = rows[0].cloze;
-			  console.log(this.text);
+			  let dataArr = [];
+			  dataArr.push(rows[0].text);
+			  dataArr.push(rows[0].cloze);
+			  callback && callback(dataArr);
 			});
 		}
 	}

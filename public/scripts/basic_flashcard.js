@@ -12,24 +12,26 @@ module.exports = class BasicFlashcard {
 	constructor() {
 		this.front,
 		this.back,
-		this.save = () => {
+		this.save = (callback) => {
 			//saves to mysql database
 			connection.query('INSERT INTO basic SET ?', {front: this.front, back : this.back}, function(err, rows, fields) {
 			  if (err) throw err;
 			  console.log('Succesfully Inserted Into Database');
+			  callback && callback();
 			});
 			// saves locally to text file
 			fs.appendFile('basic_flashcards.txt', JSON.stringify(this), (error, data) => {
 				console.log("Succesfully added to local txt file!");
 			});
 		},
-		this.fetchQuestion = () => {
+		this.fetchQuestion = (callback) => {
 			//fetches random question
 			connection.query('SELECT * FROM basic ORDER BY RAND() LIMIT 1', function(err, rows, fields) {
 			  if (err) throw err;
-			  this.front = rows[0].front;
-			  this.back = rows[0].back;
-			  console.log(this.front);
+			  let dataArr = [];
+			  dataArr.push(rows[0].front);
+			  dataArr.push(rows[0].back);
+			  callback && callback(dataArr);
 			});
 		}
 	};
