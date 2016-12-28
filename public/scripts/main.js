@@ -76,14 +76,19 @@ const inputFlashcard = (type) => {
 }
 
 const chooseType = () => {
-    inquirer.prompt({
+    inquirer.prompt([{
         type: "list",
         name: "cardtype",
         message: "Would you like a basic question or a cloze-deleted question?",
         choices: ['Basic', 'Cloze-deleted']	
-    }).then((user) => {
+    },{
+    	type: "list",
+        name: "search",
+        message: "Would you like to search the database or choose a random question?",
+        choices: ['Search', 'Random']
+    }]).then((user) => {
     	let importData = [];
-        if (user.cardtype === 'Basic') {
+        if (user.cardtype === 'Basic' && user.search === 'Random') {
         	const importBasicArr = () => {
         		basic.front = importData[0];
         		basic.back = importData[1];
@@ -93,7 +98,9 @@ const chooseType = () => {
             	importData = exportData;
             	importBasicArr();
             });
-        } else {
+        } else if (user.cardtype === 'Basic' && user.search === 'Search') {
+        	searchOrRandom('basic');
+        } else if (user.cardtype === 'Cloze-deleted' && user.search === 'Random') {
         	const importClozeArr = () => {
         		cloze.text = importData[0];
         		cloze.cloze = importData[1];
@@ -103,7 +110,47 @@ const chooseType = () => {
         		importData = exportData;
         		importClozeArr();
         	});
+        } else if (user.cardtype === 'Cloze-deleted' && user.search === 'Search') {
+        	searchOrRandom('cloze');
         }
+    });
+}
+
+const searchOrRandom = (type) => {
+	inquirer.prompt({
+        type: "input",
+        name: "query",
+        message: "Please enter your search term"	
+    }).then((search) => {
+    	eval(type).searchDatabase(search.query, results = (exportData) => {
+    		let resultArr = [];
+    		if (type === 'cloze') {
+	    		for (let i = 0; i < exportData.length; i++) {
+	    			resultArr.push(exportData[i].text);
+	    		}
+    		} else {
+    			for (let i = 0; i < exportData.length; i++) {
+	    			resultArr.push(exportData[i].front);
+	    		}
+    		}
+		    inquirer.prompt([{
+		        type: "list",
+		        name: "results",
+		        message: "Here are all the results that matched your search. Select one to read.",
+		        choices: resultArr	
+		    }]).then((result) => {
+		    	let index = resultArr.indexOf(result.results);
+		    	if (type === 'basic') {
+		    		basic.front = exportData[index].front;
+		    		basic.front = exportData[index].back;
+		    		readQuestion('basic');
+		    	} else {
+		    		cloze.text = exportData[index].text;
+		    		cloze.cloze = exportData[index].cloze;
+		    		readQuestion('cloze'); 
+		    	}
+		   	});
+		});
     });
 }
 

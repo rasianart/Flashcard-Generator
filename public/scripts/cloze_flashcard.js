@@ -39,6 +39,20 @@ module.exports = class ClozeFlashcard {
 			  dataArr.push(rows[0].cloze);
 			  callback && callback(dataArr);
 			});
+		},
+		this.searchDatabase = (query, callback) => {
+			connection.query('SELECT * FROM cloze WHERE text LIKE ? OR cloze LIKE ?', ['%' + query + '%', '%' + query + '%'], (err, rows, fields) => {
+			  if (err) throw err;
+			  let dataArr = [];
+			  for(let i = 0; i < rows.length; i++){
+			  	let dataObj = {
+			  		text: rows[i].text,
+			  		cloze: rows[i].cloze
+			  	};
+			  	dataArr.push(dataObj);
+			  }
+			  callback && callback(dataArr);
+			});
 		}
 	}
 }

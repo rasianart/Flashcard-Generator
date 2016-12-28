@@ -33,6 +33,20 @@ module.exports = class BasicFlashcard {
 			  dataArr.push(rows[0].back);
 			  callback && callback(dataArr);
 			});
+		},
+		this.searchDatabase = (query, callback) => {
+			connection.query('SELECT * FROM basic WHERE front LIKE ? OR back LIKE ?', ['%' + query + '%', '%' + query + '%'], (err, rows, fields) => {
+			  if (err) throw err;
+			  let dataArr = [];
+			  for(let i = 0; i < rows.length; i++){
+			  	let dataObj = {
+			  		front: rows[i].front,
+			  		back: rows[i].back
+			  	};
+			  	dataArr.push(dataObj);
+			  }
+			  callback && callback(dataArr);
+			});
 		}
 	};
 }
