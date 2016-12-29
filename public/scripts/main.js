@@ -134,23 +134,39 @@ const searchOrRandom = (type) => {
 	    			resultArr.push(exportData[i].front);
 	    		}
     		}
-		    inquirer.prompt([{
-		        type: "list",
-		        name: "results",
-		        message: "Here are all the results that matched your search. Select one to read.",
-		        choices: resultArr	
-		    }]).then((result) => {
-		    	let index = resultArr.indexOf(result.results);
-		    	if (type === 'basic') {
-		    		basic.front = exportData[index].front;
-		    		basic.back = exportData[index].back;
-		    		readQuestion('basic');
-		    	} else {
-		    		cloze.text = exportData[index].text;
-		    		cloze.cloze = exportData[index].cloze;
-		    		readQuestion('cloze'); 
-		    	}
-		   	});
+    		if (resultArr.length !==0) {
+			    inquirer.prompt([{
+			        type: "list",
+			        name: "results",
+			        message: "Here are all the results that matched your search. Select one to read.",
+			        choices: resultArr	
+			    }]).then((result) => {
+			    	let index = resultArr.indexOf(result.results);
+			    	if (type === 'basic') {
+			    		basic.front = exportData[index].front;
+			    		basic.back = exportData[index].back;
+			    		readQuestion('basic');
+			    	} else {
+			    		cloze.text = exportData[index].text;
+			    		cloze.cloze = exportData[index].cloze;
+			    		readQuestion('cloze'); 
+			    	}
+			   	});
+			} else {
+				console.log('Your search matched no flashcards.');
+				inquirer.prompt({
+			        type: 'confirm',
+			        name: 'search',
+			        message: 'Search again?'
+			    }).then((results) => {
+			    	if(results.search) {
+			    		searchOrRandom(type);
+			    	} else {
+			    		console.log('OK, goodbye.');
+			    		process.exit();
+			    	}
+			    });
+			}
 		});
     });
 }
