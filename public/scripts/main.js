@@ -11,6 +11,7 @@ let cardMethod = '';
 
 const run = () => {
 	requestQuestion();
+	console.log('Welcome to Flashcard Manager.');
     inquirer.prompt({
         type: "list",
         name: "method",
@@ -142,7 +143,7 @@ const searchOrRandom = (type) => {
 		    	let index = resultArr.indexOf(result.results);
 		    	if (type === 'basic') {
 		    		basic.front = exportData[index].front;
-		    		basic.front = exportData[index].back;
+		    		basic.back = exportData[index].back;
 		    		readQuestion('basic');
 		    	} else {
 		    		cloze.text = exportData[index].text;
