@@ -9,9 +9,9 @@ const cloze = new ClozeFlashcard();
 
 let cardMethod = '';
 
+console.log('Welcome to Flashcard Manager.');
 const run = () => {
 	requestQuestion();
-	console.log('Welcome to Flashcard Manager.');
     inquirer.prompt({
         type: "list",
         name: "method",
