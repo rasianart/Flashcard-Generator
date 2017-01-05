@@ -1,8 +1,8 @@
-# Flashcard-Generator (1.0)
+# Flashcard-Manager (1.0)
 
-Flashcard-Generator is a streamlined and intuitive process of creating, storing, and reading digital flashcards.
+Flashcard-Manager is a streamlined and intuitive process of creating, storing, and reading digital flashcards.
 
-Flashcard-Generator utilizes two methods of reading/storing: basic and cloze-delete
+Flashcard-Manager utilizes two methods of reading/storing: basic and cloze-delete
 
 Basic cards operate with a front/back method.  The front contains the complete question.  The back contains the answer.
 
