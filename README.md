@@ -14,3 +14,8 @@ Cloze-deleted cards operated with a partial display method.  The answer is ommit
 2. Read
 3. Random
 
+"Create" will direct user to create either a basic or cloze-deleted flashcard.  If cloze-deleted is chosen, the user with input the flashcard statement with the answer encapsulated by  "(  )".  After each creation, the user will be prompted to save the flashcard in a database.
+
+"Read" will direct the user to either choose a random flashcard from the database to be read, or search the database with key terms.  The user may select to read from either a basic card directory or a cloze-deleted directory.
+
+"Random" will select a random flashcard from an online Jeopary API and read it to the user.  The user then has the option to save this flashcard to the database.
