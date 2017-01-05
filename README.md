@@ -1,4 +1,4 @@
-# Flashcard-Generator
+# Flashcard-Generator (1.0)
 
 Flashcard-Generator is a streamlined and intuitive process of creating, storing, and reading digital flashcards.
 
