@@ -1,5 +1,9 @@
 # Flashcard-Manager (1.0)
 
+Install - npm istall
+
+Run - node main.js (in scripts directory)
+
 Flashcard-Manager is a streamlined and intuitive process of creating, storing, and reading digital flashcards.
 
 Flashcard-Manager utilizes two methods of reading/storing: basic and cloze-delete
