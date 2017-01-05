@@ -35,6 +35,7 @@ module.exports = class BasicFlashcard {
 			});
 		},
 		this.searchDatabase = (query, callback) => {
+			//searches the database for matching query results
 			connection.query('SELECT * FROM basic WHERE front LIKE ? OR back LIKE ?', ['%' + query + '%', '%' + query + '%'], (err, rows, fields) => {
 			  if (err) throw err;
 			  let dataArr = [];

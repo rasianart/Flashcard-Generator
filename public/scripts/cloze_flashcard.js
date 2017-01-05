@@ -41,6 +41,7 @@ module.exports = class ClozeFlashcard {
 			});
 		},
 		this.searchDatabase = (query, callback) => {
+			//searches the database for matching query results
 			connection.query('SELECT * FROM cloze WHERE text LIKE ? OR cloze LIKE ?', ['%' + query + '%', '%' + query + '%'], (err, rows, fields) => {
 			  if (err) throw err;
 			  let dataArr = [];
